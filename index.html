@@ -239,7 +239,7 @@
     <div class="container mx-auto px-4 py-8 max-w-7xl">
         <header class="flex flex-col md:flex-row justify-between items-center mb-8 fade-in">
             <div class="flex items-center mb-4 md:mb-0">
-                <img src="https://img2.pic.in.th/pic/logo-HDR.png" alt="School Logo" class="h-12 w-12 mr-4">
+                <img src="https://img2.pic.in.th/pic/logo-HDR.png" alt="School Logo" class="h-12 w-12 mr-4" onerror="this.onerror=null;this.src='https://placehold.co/48x48/cccccc/000000?text=Logo';">
                 
                 <div>
                     <h1 class="text-2xl md:text-3xl font-bold text-gray-800">ปฏิทินกิจกรรมสำหรับนักเรียน</h1>
@@ -367,47 +367,47 @@
     </div>
 
     <script>
-        // ตัวแปรส่วนกลาง
+        // Global variables
         let allEvents = [];
-        let filteredEvents = []; // กิจกรรมที่กรองตามผู้รับผิดชอบ (นักเรียน/ครูและนักเรียน)
+        let filteredEvents = []; // Events filtered by responsible person (student/teacher and student)
         let currentDate = new Date();
         let currentView = 'month';
-        // รหัสชีทและชื่อชีทจาก Google Sheet
+        // Google Sheet ID and Sheet Name
         const SHEET_ID = '1vMfGpLQc-Iu7O3JGkGXuzlZf0AXEQWv4fX7YOFbHA1E';
         const SHEET_NAME = '68';
-        // URL API สำหรับเชื่อมต่อ Google Apps Script
+        // API URL for Google Apps Script
         const API_URL = 'https://script.google.com/macros/s/AKfycbz9j_keDQjuL2wcYnJVJhAEYE6tKmVeWVwHsb5mE_o5MoN1f_Mot3LDLACnAmR-uvEmGg/exec';
         
-        // กำหนดกลุ่มงานและสีที่เกี่ยวข้อง
+        // Define departments and their associated colors
         const departments = {
-            "กลุ่มงานวิชาการ": {
+            "กลุ่มงานวิชาการ": { // Reverted to original keys from index-st-2.txt
                 colorClass: "dept-color-1",
                 bgClass: "bg-dept-1",
                 borderClass: "border-dept-1"
             },
-            "กลุ่มงานงบประมาณ": {
+            "กลุ่มงานงบประมาณ": { // Reverted to original keys from index-st-2.txt
                 colorClass: "dept-color-2",
                 bgClass: "bg-dept-2",
                 borderClass: "border-dept-2"
             },
-            "กลุ่มงานบุคคล": {
+            "กลุ่มงานบุคคล": { // Reverted to original keys from index-st-2.txt
                 colorClass: "dept-color-3",
                 bgClass: "bg-dept-3",
                 borderClass: "border-dept-3"
             },
-            "กลุ่มงานบริหารทั่วไป": {
+            "กลุ่มงานทั่วไป": { // Reverted to original keys from index-st-2.txt
                 colorClass: "dept-color-4",
                 bgClass: "bg-dept-4",
                 borderClass: "border-dept-4"
             },
-            "กลุ่มงานกิจการ": {
+            "กลุ่มงานกิจการ": { // Reverted to original keys from index-st-2.txt
                 colorClass: "dept-color-5",
                 bgClass: "bg-dept-5",
                 borderClass: "border-dept-5"
             }
         };
         
-        // อ้างอิงถึง DOM elements
+        // Reference to DOM elements
         const monthViewBtn = document.getElementById('monthViewBtn');
         const yearViewBtn = document.getElementById('yearViewBtn');
         const calendarView = document.getElementById('calendarView');
@@ -428,38 +428,38 @@
         const closeModalBtn = document.getElementById('closeModalBtn');
         const modalContent = document.getElementById('modalContent');
         
-        // ชื่อเดือนภาษาไทย
+        // Thai month names
         const thaiMonths = [
             'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
             'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
         ];
         
-        // เริ่มต้นแอป
+        // Initialize the app
         function init() {
             fetchEvents();
             setupEventListeners();
             updateCalendarTitle();
         }
         
-        // ตั้งค่า event listeners
+        // Set up event listeners
         function setupEventListeners() {
             monthViewBtn.addEventListener('click', () => switchView('month'));
             yearViewBtn.addEventListener('click', () => switchView('year'));
             prevBtn.addEventListener('click', navigatePrevious);
             nextBtn.addEventListener('click', navigateNext);
             refreshBtn.addEventListener('click', fetchEvents);
-            searchBtn.addEventListener('click', filterEvents); // เรียก filterEvents เมื่อค้นหา
+            searchBtn.addEventListener('click', filterEvents); // Call filterEvents on search
             closeModal.addEventListener('click', hideModal);
             closeModalBtn.addEventListener('click', hideModal);
             
-            // ปิดโมดัลเมื่อคลิกนอกพื้นที่
+            // Close modal when clicking outside
             window.addEventListener('click', (e) => {
                 if (e.target === eventModal) {
                     hideModal();
                 }
             });
             
-            // เพิ่ม event listener สำหรับปุ่ม Enter ในช่องค้นหากิจกรรม
+            // Add event listener for Enter key in search input
             titleFilter.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     filterEvents();
@@ -467,7 +467,7 @@
             });
         }
         
-        // สลับมุมมองระหว่างเดือนและปี
+        // Switch between month and year view
         function switchView(view) {
             currentView = view;
             
@@ -488,10 +488,10 @@
             }
             
             updateCalendarTitle();
-            filterEvents(); // เรียก filterEvents เพื่ออัปเดตการแสดงผลให้ตรงกับมุมมองใหม่
+            filterEvents(); // Call filterEvents to update display for new view
         }
         
-        // อัปเดตชื่อปฏิทินตามมุมมองและวันที่ปัจจุบัน
+        // Update calendar title based on current view and date
         function updateCalendarTitle() {
             if (currentView === 'month') {
                 currentPeriod.textContent = `${thaiMonths[currentDate.getMonth()]} ${currentDate.getFullYear() + 543}`;
@@ -500,7 +500,7 @@
             }
         }
         
-        // เลื่อนไปยังเดือน/ปีก่อนหน้า
+        // Navigate to previous month/year
         function navigatePrevious() {
             if (currentView === 'month') {
                 currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
@@ -508,10 +508,10 @@
                 currentDate = new Date(currentDate.getFullYear() - 1, 0, 1);
             }
             updateCalendarTitle();
-            filterEvents(); // เรียก filterEvents เพื่ออัปเดตการแสดงผล
+            filterEvents(); // Call filterEvents to update display
         }
         
-        // เลื่อนไปยังเดือน/ปีถัดไป
+        // Navigate to next month/year
         function navigateNext() {
             if (currentView === 'month') {
                 currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
@@ -519,60 +519,60 @@
                 currentDate = new Date(currentDate.getFullYear() + 1, 0, 1);
             }
             updateCalendarTitle();
-            filterEvents(); // เรียก filterEvents เพื่ออัปเดตการแสดงผล
+            filterEvents(); // Call filterEvents to update display
         }
         
-        // ฟังก์ชันสำหรับรับข้อมูลสีตามกลุ่มงาน
+        // Function to get department styles
         function getDepartmentStyles(department) {
             return departments[department] || {
-                colorClass: "dept-color-1", // ค่าเริ่มต้น (สีฟ้า) หากไม่พบกลุ่มงาน
+                colorClass: "dept-color-1", // Default (blue) if department not found
                 bgClass: "bg-dept-1",
                 borderClass: "border-dept-1"
             };
         }
         
-        // ฟังก์ชันตรวจสอบว่าผู้รับผิดชอบเป็นนักเรียนหรือครูและนักเรียนหรือไม่
+        // Function to check if responsible person is student or teacher and student
         function isStudentResponsible(person) {
             if (!person) return false;
             
-            // ตรวจสอบว่ามีคำว่า "นักเรียน" หรือ "ครูและนักเรียน" หรือไม่
+            // Check if "นักเรียน" or "ครูและนักเรียน" is present
             const personLower = person.toLowerCase();
             return personLower.includes('นักเรียน') || 
                   (personLower.includes('ครู') && personLower.includes('นักเรียน'));
         }
         
-        // ดึงข้อมูลกิจกรรมจาก Google Sheets
+        // Fetch events from Google Sheets
         function fetchEvents() {
             showLoading(true);
             
             fetch(`${API_URL}?sheetId=${SHEET_ID}&sheetName=${SHEET_NAME}`)
                 .then(response => response.json())
                 .then(data => {
-                    // ประมวลผลข้อมูลทั้งหมด
+                    // Process all data
                     allEvents = processEvents(data);
                     
-                    // กรองเฉพาะกิจกรรมที่มีผู้รับผิดชอบเป็นนักเรียนหรือครูและนักเรียน
+                    // Filter events where responsible person is student or teacher and student
                     filteredEvents = allEvents.filter(event => isStudentResponsible(event.person));
                     
                     populateFilters();
-                    filterEvents(); // เรียก filterEvents เพื่อแสดงผลเริ่มต้น
+                    filterEvents(); // Call filterEvents to render initial display
                     showLoading(false);
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
                     showLoading(false);
-                    // ใช้ modal แทน alert
+                    // Use custom modal instead of alert
                     showCustomAlert('เกิดข้อผิดพลาดในการโหลดข้อมูล กรุณาลองใหม่อีกครั้ง');
                 });
         }
         
-        // ประมวลผลข้อมูลกิจกรรมจาก API
+        // Process event data from API
         function processEvents(data) {
             return data.map(item => {
-                // ประมวลผลทุกฟิลด์จากชีท
+                // Process all fields from the sheet
                 const startDate = parseDate(item['วันที่เริ่มต้น']);
                 const endDate = item['วันที่สิ้นสุด'] ? parseDate(item['วันที่สิ้นสุด']) : startDate;
-                const department = item['กลุ่มงาน'] ? String(item['กลุ่มงาน']).trim() : ''; // เพิ่ม .trim()
+                const department = item['กลุ่มงาน'] ? String(item['กลุ่มงาน']).trim() : ''; // Add .trim()
                 const deptStyles = getDepartmentStyles(department);
                 
                 return {
@@ -590,14 +590,14 @@
                     bgClass: deptStyles.bgClass,
                     borderClass: deptStyles.borderClass
                 };
-            }).filter(event => event.startDate); // กรองกิจกรรมที่ไม่มีวันที่ถูกต้องออก
+            }).filter(event => event.startDate); // Filter out events without valid dates
         }
         
-        // แปลงสตริงวันที่เป็นอ็อบเจกต์ Date
+        // Convert date string to Date object
         function parseDate(dateStr) {
             if (!dateStr) return null;
             
-            // ลองใช้รูปแบบวันที่ต่างๆ
+            // Try different date formats
             const formats = [
                 // DD/MM/YYYY
                 str => {
@@ -632,27 +632,27 @@
                 }
             }
             
-            // ถ้าไม่สำเร็จ ลองใช้การแยกวิเคราะห์วันที่แบบ native
+            // If unsuccessful, try native date parsing
             const date = new Date(dateStr);
             return !isNaN(date.getTime()) ? date : null;
         }
         
-        // สร้าง ID สุ่ม
+        // Generate random ID
         function generateId() {
             return Math.random().toString(36).substring(2, 15);
         }
         
-        // เติมข้อมูลลงใน dropdown ของตัวกรอง
+        // Populate filter dropdowns
         function populateFilters() {
-            // ล้างตัวเลือกที่มีอยู่ยกเว้นตัวเลือกแรก
+            // Clear existing options except the first one
             personFilter.innerHTML = '<option value="">ทั้งหมด</option>';
             departmentFilter.innerHTML = '<option value="">ทั้งหมด</option>';
             
-            // รับค่าที่ไม่ซ้ำกันจากกิจกรรมที่ถูกกรองเท่านั้น
+            // Get unique values from filtered events only
             const persons = [...new Set(filteredEvents.map(event => event.person).filter(Boolean))];
             const departmentNames = [...new Set(filteredEvents.map(event => event.department).filter(Boolean))];
             
-            // เพิ่มตัวเลือกให้กับ dropdown
+            // Add options to dropdowns
             persons.forEach(person => {
                 const option = document.createElement('option');
                 option.value = person;
@@ -668,13 +668,13 @@
             });
         }
         
-        // กรองกิจกรรมตามเกณฑ์การค้นหาและอัปเดตการแสดงผล
+        // Filter events based on search criteria and update display
         function filterEvents() {
             const title = titleFilter.value.toLowerCase();
             const person = personFilter.value;
             const department = departmentFilter.value;
             
-            // กรองกิจกรรมทั้งหมดตามตัวกรองการค้นหา
+            // Filter all events based on search filters
             let searchFilteredEvents = filteredEvents.filter(event => {
                 const matchesTitle = title ? event.title.toLowerCase().includes(title) : true;
                 const matchesPerson = person ? (event.person && event.person.includes(person)) : true;
@@ -682,7 +682,7 @@
                 return matchesTitle && matchesPerson && matchesDepartment;
             });
             
-            // กรองกิจกรรมตามช่วงเวลาที่กำลังแสดง (เดือนหรือปี)
+            // Filter events based on current display period (month or year)
             let eventsToDisplay = [];
             if (currentView === 'month') {
                 const year = currentDate.getFullYear();
@@ -690,8 +690,8 @@
                 eventsToDisplay = searchFilteredEvents.filter(event => {
                     const eventStart = new Date(event.startDate);
                     const eventEnd = new Date(event.endDate);
-                    // ตรวจสอบว่ากิจกรรมอยู่ในเดือนที่กำลังแสดงอยู่หรือไม่
-                    // กิจกรรมที่เริ่มต้นหรือสิ้นสุดในเดือนนั้น หรือครอบคลุมเดือนนั้น
+                    // Check if event is within the current month
+                    // Events starting or ending in that month, or spanning across that month
                     return (eventStart.getFullYear() === year && eventStart.getMonth() === month) ||
                            (eventEnd.getFullYear() === year && eventEnd.getMonth() === month) ||
                            (eventStart < new Date(year, month, 1) && eventEnd > new Date(year, month + 1, 0));
@@ -702,37 +702,37 @@
                 eventsToDisplay = searchFilteredEvents.filter(event => {
                     const eventStart = new Date(event.startDate);
                     const eventEnd = new Date(event.endDate);
-                    // ตรวจสอบว่ากิจกรรมอยู่ในปีที่กำลังแสดงอยู่หรือไม่
+                    // Check if event is within the current year
                     return (eventStart.getFullYear() === year) || (eventEnd.getFullYear() === year);
                 });
                 renderYearCalendar(eventsToDisplay);
             }
             
-            renderEventsList(eventsToDisplay); // แสดงรายการกิจกรรมที่กรองแล้ว
+            renderEventsList(eventsToDisplay); // Display the filtered event list
         }
         
-        // แสดงปฏิทินรายเดือน
+        // Display month calendar
         function renderMonthCalendar(eventsToDisplay) {
             calendarDays.innerHTML = '';
             
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth();
             
-            // รับวันแรกของเดือน
+            // Get the first day of the month
             const firstDay = new Date(year, month, 1);
             const lastDay = new Date(year, month + 1, 0);
             
-            // รับวันในสัปดาห์สำหรับวันแรก (0 = อาทิตย์, 6 = เสาร์)
+            // Get the day of the week for the first day (0 = Sunday, 6 = Saturday)
             let firstDayOfWeek = firstDay.getDay();
             
-            // สร้างเซลล์ว่างสำหรับวันก่อนวันแรกของเดือน
+            // Create empty cells for days before the first day of the month
             for (let i = 0; i < firstDayOfWeek; i++) {
                 const dayCell = document.createElement('div');
                 dayCell.className = 'calendar-day p-2 border border-gray-100';
                 calendarDays.appendChild(dayCell);
             }
             
-            // สร้างเซลล์สำหรับแต่ละวันของเดือน
+            // Create cells for each day of the month
             for (let day = 1; day <= lastDay.getDate(); day++) {
                 const date = new Date(year, month, day);
                 const dayEvents = eventsToDisplay.filter(event => {
@@ -764,20 +764,30 @@
                 }
                 dayCell.appendChild(dayHeader);
                 
-                // เพิ่มตัวบ่งชี้กิจกรรม
+                // Add event indicators
                 if (dayEvents.length > 0) {
                     const eventsListContainer = document.createElement('div');
                     eventsListContainer.className = 'space-y-1 mt-1';
                     
-                    // แสดงกิจกรรมสูงสุด 2 รายการ จากนั้นแสดงตัวบ่งชี้ "เพิ่มเติม"
+                    // Display up to 2 events, then show "more" indicator
                     const displayEvents = dayEvents.slice(0, 2);
                     displayEvents.forEach(event => {
                         const eventItem = document.createElement('div');
-                        // *** จุดที่แก้ไข ***
-                        eventItem.className = `text-xs truncate cursor-pointer hover:font-semibold ${event.colorClass}`;
-                        eventItem.style.paddingLeft = '4px';
-                        eventItem.textContent = event.title;
+                        // Use flexbox to align color dot and event title
+                        eventItem.className = `flex items-center space-x-1 text-xs truncate cursor-pointer hover:font-semibold`;
                         eventItem.addEventListener('click', () => showEventDetails(event));
+
+                        // Small color dot (now black)
+                        const colorDot = document.createElement('div');
+                        colorDot.className = `w-2 h-2 rounded-full bg-black`; // All dots are black
+                        eventItem.appendChild(colorDot);
+
+                        // Event title
+                        const eventTitleSpan = document.createElement('span');
+                        eventTitleSpan.className = `${event.colorClass}`; // Text color still based on department
+                        eventTitleSpan.textContent = event.title;
+                        eventItem.appendChild(eventTitleSpan);
+
                         eventsListContainer.appendChild(eventItem);
                     });
                     
@@ -786,7 +796,7 @@
                         moreIndicator.className = 'text-xs text-center text-gray-500 cursor-pointer hover:underline';
                         moreIndicator.textContent = `+ อีก ${dayEvents.length - 2} กิจกรรม`;
                         moreIndicator.addEventListener('click', () => {
-                            // กรองรายการกิจกรรมเพื่อแสดงเฉพาะกิจกรรมสำหรับวันนี้
+                            // Filter event list to show only events for this day
                             renderEventsList(dayEvents);
                         });
                         eventsListContainer.appendChild(moreIndicator);
@@ -799,27 +809,27 @@
             }
         }
         
-        // แสดงปฏิทินรายปี
+        // Display year calendar
         function renderYearCalendar(eventsToDisplay) {
             yearView.innerHTML = '';
             
             const year = currentDate.getFullYear();
             
-            // สร้างปฏิทินย่อสำหรับแต่ละเดือน
+            // Create mini calendar for each month
             for (let month = 0; month < 12; month++) {
                 const monthContainer = document.createElement('div');
                 monthContainer.className = 'bg-white rounded-lg shadow-sm p-3 fade-in';
                 
                 const monthHeader = document.createElement('div');
-                monthHeader.className = 'text-center font-semibold mb-2 text-red-500'; // อาจเปลี่ยนสีตรงนี้เป็นสีหลักของ dept นั้นๆ ได้ถ้าต้องการ
+                monthHeader.className = 'text-center font-semibold mb-2 text-red-500'; 
                 monthHeader.textContent = thaiMonths[month];
                 monthContainer.appendChild(monthHeader);
                 
-                // สร้างตารางปฏิทินย่อ
+                // Create mini calendar grid
                 const calendarGrid = document.createElement('div');
                 calendarGrid.className = 'grid grid-cols-7 gap-1 text-center text-xs';
                 
-                // เพิ่มส่วนหัวของวัน
+                // Add day headers
                 const dayHeaders = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'];
                 dayHeaders.forEach(day => {
                     const dayHeader = document.createElement('div');
@@ -828,18 +838,18 @@
                     calendarGrid.appendChild(dayHeader);
                 });
                 
-                // รับวันแรกของเดือน
+                // Get the first day of the month
                 const firstDay = new Date(year, month, 1);
                 const lastDay = new Date(year, month + 1, 0);
                 const firstDayOfWeek = firstDay.getDay();
                 
-                // เพิ่มเซลล์ว่างสำหรับวันก่อนวันแรก
+                // Add empty cells for days before the first day
                 for (let i = 0; i < firstDayOfWeek; i++) {
                     const emptyCell = document.createElement('div');
                     calendarGrid.appendChild(emptyCell);
                 }
                 
-                // เพิ่มเซลล์สำหรับแต่ละวัน
+                // Add cells for each day
                 for (let day = 1; day <= lastDay.getDate(); day++) {
                     const date = new Date(year, month, day);
                     const dayEvents = eventsToDisplay.filter(event => {
@@ -850,17 +860,17 @@
                     });
                     
                     const dayCell = document.createElement('div');
-                    // กำหนดสีพื้นหลังของวันที่ในมุมมองปี หากมีกิจกรรม
+                    // Set background color of day in year view if there are events
                     dayCell.className = `py-1 cursor-pointer ${dayEvents.length > 0 ? (dayEvents[0].bgClass + ' rounded-full font-semibold') : ''}`; 
                     dayCell.textContent = day;
-                    // กำหนดสีตัวอักษรของวันที่ในมุมมองปี หากมีกิจกรรม
+                    // Set text color of day in year view if there are events
                     if (dayEvents.length > 0) {
                         dayCell.classList.add(dayEvents[0].colorClass);
                     }
                     
                     if (dayEvents.length > 0) {
                         dayCell.addEventListener('click', () => {
-                            // ตั้งค่าวันที่ปัจจุบันเป็นวันนี้และสลับไปที่มุมมองรายเดือน
+                            // Set current date to this day and switch to month view
                             currentDate = new Date(year, month, day);
                             switchView('month');
                         });
@@ -871,7 +881,7 @@
                 
                 monthContainer.appendChild(calendarGrid);
                 
-                // นับกิจกรรมสำหรับเดือนนี้
+                // Count events for this month
                 const monthEvents = eventsToDisplay.filter(event => {
                     const eventDate = new Date(event.startDate);
                     return eventDate.getMonth() === month && eventDate.getFullYear() === year;
@@ -879,7 +889,7 @@
                 
                 if (monthEvents.length > 0) {
                     const eventCount = document.createElement('div');
-                    eventCount.className = 'text-center text-xs mt-2 text-red-500'; // อาจเปลี่ยนสีตรงนี้เป็นสีหลักของ dept นั้นๆ ได้ถ้าต้องการ
+                    eventCount.className = 'text-center text-xs mt-2 text-red-500'; 
                     eventCount.textContent = `${monthEvents.length} กิจกรรม`;
                     monthContainer.appendChild(eventCount);
                 }
@@ -888,8 +898,8 @@
             }
         }
         
-        // แสดงรายการกิจกรรม
-        function renderEventsList(events) { // รับ events ที่ถูกกรองแล้ว
+        // Display event list
+        function renderEventsList(events) { // Receives already filtered events
             eventsList.innerHTML = '';
             
             if (events.length === 0) {
@@ -900,10 +910,10 @@
                 return;
             }
             
-            // เรียงลำดับกิจกรรมตามวันที่
+            // Sort events by date
             const sortedEvents = [...events].sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
             
-            // จัดกลุ่มกิจกรรมตามเดือน
+            // Group events by month
             const eventsByMonth = {};
             sortedEvents.forEach(event => {
                 const date = new Date(event.startDate);
@@ -916,10 +926,10 @@
                 eventsByMonth[monthYear].push(event);
             });
             
-            // สร้างรายการกิจกรรมตามเดือน
+            // Create event list by month
             Object.keys(eventsByMonth).forEach(monthYear => {
                 const monthHeader = document.createElement('h4');
-                monthHeader.className = 'font-semibold text-red-500 mb-2'; // Header ของเดือนยังเป็นสีแดงหลัก
+                monthHeader.className = 'font-semibold text-red-500 mb-2'; // Month header remains primary red
                 monthHeader.textContent = monthYear;
                 eventsList.appendChild(monthHeader);
                 
@@ -935,7 +945,7 @@
                     eventHeader.className = 'flex justify-between items-start';
                     
                     const eventTitle = document.createElement('h5');
-                    eventTitle.className = `font-semibold ${event.colorClass}`; // ชื่อกิจกรรมใช้สีกลุ่มงาน
+                    eventTitle.className = `font-semibold ${event.colorClass}`; // Event title uses department color
                     eventTitle.textContent = event.title;
                     
                     const eventDate = document.createElement('div');
@@ -962,7 +972,7 @@
                         
                         if (event.department) {
                             const deptSpan = document.createElement('span');
-                            deptSpan.className = `mr-2 ${event.colorClass} font-medium`; // ชื่อกลุ่มงานใช้สีกลุ่มงาน
+                            deptSpan.className = `mr-2 ${event.colorClass} font-medium`; // Department name uses department color
                             deptSpan.textContent = `${event.department}`;
                             eventInfo.appendChild(deptSpan);
                         }
@@ -982,17 +992,17 @@
             });
         }
         
-        // แสดงรายละเอียดกิจกรรมในโมดัล
+        // Show event details in modal
         function showEventDetails(event) {
             modalContent.innerHTML = '';
             
-            // ชื่อกิจกรรมพร้อมสีกลุ่มงาน
+            // Event title with department color
             const title = document.createElement('h3');
             title.className = `text-xl font-semibold mb-3 ${event.colorClass}`;
             title.textContent = event.title;
             modalContent.appendChild(title);
             
-            // ป้ายกลุ่มงาน
+            // Department badge
             if (event.department) {
                 const deptBadge = document.createElement('div');
                 deptBadge.className = `inline-block px-3 py-1 rounded-full mb-3 ${event.bgClass} ${event.colorClass} font-medium`;
@@ -1000,7 +1010,7 @@
                 modalContent.appendChild(deptBadge);
             }
             
-            // วันที่เริ่มต้นกิจกรรม
+            // Event start date
             const startDateContainer = document.createElement('div');
             startDateContainer.className = 'flex items-start mb-3';
             
@@ -1025,7 +1035,7 @@
             startDateContainer.appendChild(startDateText);
             modalContent.appendChild(startDateContainer);
             
-            // วันที่สิ้นสุดกิจกรรม
+            // Event end date
             if (event.endDate && event.startDate.toDateString() !== event.endDate.toDateString()) {
                 const endDateContainer = document.createElement('div');
                 endDateContainer.className = 'flex items-start mb-3';
@@ -1052,7 +1062,7 @@
                 modalContent.appendChild(endDateContainer);
             }
             
-            // เวลากิจกรรม
+            // Event time
             if (event.time) {
                 const timeContainer = document.createElement('div');
                 timeContainer.className = 'flex items-start mb-3';
@@ -1078,7 +1088,7 @@
                 modalContent.appendChild(timeContainer);
             }
             
-            // สถานที่จัดกิจกรรม
+            // Event location
             if (event.location) {
                 const locationContainer = document.createElement('div');
                 locationContainer.className = 'flex items-start mb-3';
@@ -1105,7 +1115,7 @@
                 modalContent.appendChild(locationContainer);
             }
             
-            // ผู้เกี่ยวข้อง
+            // Responsible person
             if (event.person) {
                 const personContainer = document.createElement('div');
                 personContainer.className = 'flex items-start mb-3';
@@ -1131,7 +1141,7 @@
                 modalContent.appendChild(personContainer);
             }
             
-            // รายละเอียดกิจกรรม
+            // Event details
             if (event.details) {
                 const detailsContainer = document.createElement('div');
                 detailsContainer.className = `mt-4 p-3 ${event.bgClass} rounded-lg`;
@@ -1149,7 +1159,7 @@
                 modalContent.appendChild(detailsContainer);
             }
             
-            // ข้อมูลเพิ่มเติม
+            // Additional info
             if (event.additionalInfo) {
                 const additionalContainer = document.createElement('div');
                 additionalContainer.className = `mt-4 p-3 ${event.bgClass} rounded-lg`;
@@ -1170,12 +1180,12 @@
             eventModal.classList.remove('hidden');
         }
         
-        // ซ่อนโมดัลรายละเอียดกิจกรรม
+        // Hide event details modal
         function hideModal() {
             eventModal.classList.add('hidden');
         }
         
-        // แสดง/ซ่อนตัวบ่งชี้การโหลด
+        // Show/hide loading indicator
         function showLoading(show) {
             if (show) {
                 loadingIndicator.classList.remove('hidden');
@@ -1184,7 +1194,7 @@
             }
         }
 
-        // ฟังก์ชันสำหรับแสดง Custom Alert (แทน alert())
+        // Function to show custom alert (replaces alert())
         function showCustomAlert(message) {
             const alertModal = document.createElement('div');
             alertModal.id = 'customAlertModal';
@@ -1220,13 +1230,13 @@
             });
         }
         
-        // ฟอร์แมตวันที่เป็นสตริง
+        // Format date to string
         function formatDate(date) {
             if (!date) return '';
             return `${date.getDate()} ${thaiMonths[date.getMonth()]} ${date.getFullYear() + 543}`;
         }
         
-        // เริ่มต้นแอปเมื่อหน้าเว็บโหลดเสร็จ
+        // Initialize the app when the page loads
         window.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
